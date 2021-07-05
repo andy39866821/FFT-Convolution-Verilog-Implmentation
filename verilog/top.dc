@@ -1,0 +1,13 @@
+# add your design here
+read_file -format verilog {./top.v}
+
+create_clock -name "clk" -period 40 -waveform { 0 20 } { clk }
+set_fix_hold clk
+set_dont_touch_network clk
+compile -exact_map
+
+write_file -format verilog -hierarchy -output top_syn.v
+write_sdf -version 3.0 top_syn.sdf
+uplevel #0 { report_timing -path full -delay max -nworst 1 -max_paths 1 -significant_digits 2 -sort_by group }
+report_area
+exit
